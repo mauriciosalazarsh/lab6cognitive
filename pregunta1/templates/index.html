@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Pokémon</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .error {
+            background: #ffe6e6;
+            color: #cc0000;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #cc0000;
+        }
+
+        .pokemon-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .pokemon-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .pokemon-header h2 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .pokemon-id {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .types-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .types-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .types-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .type-badge {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 14px;
+            color: white;
+        }
+
+        .type-normal { background-color: #A8A878; }
+        .type-fire { background-color: #F08030; }
+        .type-water { background-color: #6890F0; }
+        .type-electric { background-color: #F8D030; color: #333; }
+        .type-grass { background-color: #78C850; }
+        .type-ice { background-color: #98D8D8; }
+        .type-fighting { background-color: #C03028; }
+        .type-poison { background-color: #A040A0; }
+        .type-ground { background-color: #E0C068; }
+        .type-flying { background-color: #A890F0; }
+        .type-psychic { background-color: #F85888; }
+        .type-bug { background-color: #A8B820; }
+        .type-rock { background-color: #B8A038; }
+        .type-ghost { background-color: #705898; }
+        .type-dragon { background-color: #7038F8; }
+        .type-dark { background-color: #705848; }
+        .type-steel { background-color: #B8B8D0; }
+        .type-fairy { background-color: #EE99AC; }
+
+        .sprites-section {
+            margin-bottom: 30px;
+        }
+
+        .sprites-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .sprites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .sprite-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .sprite-item img {
+            width: 120px;
+            height: 120px;
+            image-rendering: pixelated;
+        }
+
+        .sprite-label {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .moves-section {
+            margin-top: 30px;
+        }
+
+        .moves-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .moves-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .move-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            color: #555;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-transform: capitalize;
+        }
+
+        .instructions {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Buscador de Pokémon</h1>
+
+        <form class="search-form" method="POST">
+            <input
+                type="text"
+                name="pokemon_name"
+                placeholder="Ingresa el nombre del Pokémon (ej: pikachu, charizard, mewtwo)"
+                required
+            >
+            <button type="submit">Buscar</button>
+        </form>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if pokemon_data %}
+            <div class="pokemon-card">
+                <div class="pokemon-header">
+                    <h2>{{ pokemon_data.name }}</h2>
+                    <div class="pokemon-id">N° {{ pokemon_data.id }}</div>
+                </div>
+
+                <div class="types-section">
+                    <h3>Tipos</h3>
+                    <div class="types-container">
+                        {% for type in pokemon_data.types %}
+                            <span class="type-badge type-{{ type }}">{{ type }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="sprites-section">
+                    <h3>Imágenes del Pokémon</h3>
+                    <div class="sprites-grid">
+                        {% if pokemon_data.sprites.front_default %}
+                        <div class="sprite-item">
+                            <img src="{{ pokemon_data.sprites.front_default }}" alt="Frente Normal">
+                            <div class="sprite-label">Frente Normal</div>
+                        </div>
+                        {% endif %}
+
+                        {% if pokemon_data.sprites.front_shiny %}
+                        <div class="sprite-item">
+                            <img src="{{ pokemon_data.sprites.front_shiny }}" alt="Frente Shiny">
+                            <div class="sprite-label">Frente Shiny</div>
+                        </div>
+                        {% endif %}
+
+                        {% if pokemon_data.sprites.back_default %}
+                        <div class="sprite-item">
+                            <img src="{{ pokemon_data.sprites.back_default }}" alt="Espalda Normal">
+                            <div class="sprite-label">Espalda Normal</div>
+                        </div>
+                        {% endif %}
+
+                        {% if pokemon_data.sprites.back_shiny %}
+                        <div class="sprite-item">
+                            <img src="{{ pokemon_data.sprites.back_shiny }}" alt="Espalda Shiny">
+                            <div class="sprite-label">Espalda Shiny</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="moves-section">
+                    <h3>Movimientos (Primeros 10)</h3>
+                    <div class="moves-grid">
+                        {% for move in pokemon_data.moves %}
+                            <div class="move-item">{{ move }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="instructions">
+                Ingresa el nombre de un Pokémon para ver su información, tipos, movimientos e imágenes.
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
