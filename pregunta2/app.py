@@ -4,6 +4,7 @@ import yt_dlp
 from urllib.parse import urlparse
 import time
 import threading
+import re
 
 app = Flask(__name__)
 
@@ -13,6 +14,12 @@ if not os.path.exists(DOWNLOAD_FOLDER):
 
 download_progress = {}
 
+
+def sanitize_filename(filename):
+    filename = re.sub(r'[^\w\s\-\.]', '', filename)
+    filename = re.sub(r'\s+', '_', filename)
+    filename = filename[:200]
+    return filename
 
 def detect_platform(url):
     domain = urlparse(url).netloc.lower()
@@ -87,7 +94,7 @@ def download_video():
         }
 
         ydl_opts = {
-            'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
+            'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(id)s.%(ext)s'),
             'progress_hooks': [ProgressHook(download_id)],
             'quiet': True,
             'no_warnings': True,
@@ -96,6 +103,7 @@ def download_video():
             'extractor_retries': 3,
             'fragment_retries': 3,
             'ignoreerrors': False,
+            'restrictfilenames': True,
         }
 
         if platform == 'YouTube':
