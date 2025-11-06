@@ -92,10 +92,19 @@ def download_video():
             'progress_hooks': [ProgressHook(download_id)],
             'quiet': True,
             'no_warnings': True,
+            'nocheckcertificate': True,
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'extractor_retries': 3,
+            'fragment_retries': 3,
+            'ignoreerrors': False,
         }
 
         if platform == 'YouTube':
-            ydl_opts['format'] = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
+            ydl_opts['format'] = 'best[ext=mp4]/best'
+        elif platform == 'Instagram':
+            ydl_opts['format'] = 'best'
+        elif platform == 'TikTok':
+            ydl_opts['format'] = 'best'
 
         def download_thread():
             try:
