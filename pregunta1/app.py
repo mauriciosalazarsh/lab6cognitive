@@ -13,18 +13,16 @@ def index():
 
         if pokemon_name:
             try:
-                # Consumir la PokeAPI
                 response = requests.get(f'https://pokeapi.co/api/v2/pokemon/{pokemon_name}')
 
                 if response.status_code == 200:
                     data = response.json()
 
-                    # Extraer información relevante
                     pokemon_data = {
                         'name': data['name'].capitalize(),
                         'id': data['id'],
                         'types': [t['type']['name'] for t in data['types']],
-                        'moves': [m['move']['name'] for m in data['moves'][:10]],  # Primeros 10 movimientos
+                        'moves': [m['move']['name'] for m in data['moves'][:10]],
                         'sprites': {
                             'front_default': data['sprites']['front_default'],
                             'front_shiny': data['sprites']['front_shiny'],

@@ -17,7 +17,6 @@ class VideoDownloader:
             os.makedirs(output_folder)
 
     def detect_platform(self, url):
-        """Detecta la plataforma del video basándose en la URL"""
         domain = urlparse(url).netloc.lower()
 
         if 'youtube.com' in domain or 'youtu.be' in domain:
@@ -30,7 +29,6 @@ class VideoDownloader:
             return 'Desconocido'
 
     def download_video(self, url):
-        """Descarga el video desde la URL proporcionada"""
         platform = self.detect_platform(url)
 
         print(f"\n{'='*60}")
@@ -42,7 +40,6 @@ class VideoDownloader:
             print("Advertencia: No se pudo detectar la plataforma.")
             print("Intentando descargar de todas formas...\n")
 
-        # Configuración de yt-dlp
         ydl_opts = {
             'format': 'best',
             'outtmpl': os.path.join(self.output_folder, '%(title)s.%(ext)s'),
@@ -51,7 +48,6 @@ class VideoDownloader:
             'no_warnings': False,
         }
 
-        # Configuraciones específicas por plataforma
         if platform == 'YouTube':
             ydl_opts['format'] = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
 
@@ -84,7 +80,6 @@ class VideoDownloader:
             return False
 
     def progress_hook(self, d):
-        """Hook para mostrar el progreso de descarga"""
         if d['status'] == 'downloading':
             try:
                 percent = d.get('_percent_str', 'N/A')
@@ -119,7 +114,6 @@ def main():
                 print("Error: Debes ingresar una URL válida.")
                 continue
 
-            # Validar que la URL sea válida
             try:
                 result = urlparse(url)
                 if not all([result.scheme, result.netloc]):

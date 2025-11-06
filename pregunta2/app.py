@@ -7,17 +7,14 @@ import threading
 
 app = Flask(__name__)
 
-# Configuración
 DOWNLOAD_FOLDER = os.path.join(app.root_path, 'static', 'downloads')
 if not os.path.exists(DOWNLOAD_FOLDER):
     os.makedirs(DOWNLOAD_FOLDER)
 
-# Diccionario para almacenar el progreso de las descargas
 download_progress = {}
 
 
 def detect_platform(url):
-    """Detecta la plataforma del video basándose en la URL"""
     domain = urlparse(url).netloc.lower()
 
     if 'youtube.com' in domain or 'youtu.be' in domain:
@@ -72,7 +69,6 @@ def download_video():
         if not url:
             return jsonify({'success': False, 'error': 'URL no proporcionada'}), 400
 
-        # Validar URL
         try:
             result = urlparse(url)
             if not all([result.scheme, result.netloc]):
@@ -83,7 +79,6 @@ def download_video():
         platform = detect_platform(url)
         download_id = str(int(time.time() * 1000))
 
-        # Inicializar progreso
         download_progress[download_id] = {
             'status': 'starting',
             'percent': '0%',
@@ -91,7 +86,6 @@ def download_video():
             'eta': 'N/A'
         }
 
-        # Configuración de yt-dlp
         ydl_opts = {
             'format': 'best',
             'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
@@ -100,7 +94,6 @@ def download_video():
             'no_warnings': True,
         }
 
-        # Configuración específica por plataforma
         if platform == 'YouTube':
             ydl_opts['format'] = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
 
@@ -124,7 +117,6 @@ def download_video():
                     'error': str(e)
                 }
 
-        # Iniciar descarga en segundo plano
         thread = threading.Thread(target=download_thread)
         thread.daemon = True
         thread.start()
@@ -156,14 +148,13 @@ def download_file(filename):
 
 @app.route('/cleanup')
 def cleanup_downloads():
-    """Limpia archivos antiguos (más de 1 hora)"""
     try:
         current_time = time.time()
         for filename in os.listdir(DOWNLOAD_FOLDER):
             file_path = os.path.join(DOWNLOAD_FOLDER, filename)
             if os.path.isfile(file_path):
                 file_age = current_time - os.path.getmtime(file_path)
-                if file_age > 3600:  # 1 hora
+                if file_age > 3600:
                     os.remove(file_path)
         return jsonify({'success': True, 'message': 'Limpieza completada'})
     except Exception as e:
