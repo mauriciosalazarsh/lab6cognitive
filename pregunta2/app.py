@@ -87,7 +87,6 @@ def download_video():
         }
 
         ydl_opts = {
-            'format': 'best',
             'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
             'progress_hooks': [ProgressHook(download_id)],
             'quiet': True,
@@ -100,10 +99,12 @@ def download_video():
         }
 
         if platform == 'YouTube':
-            ydl_opts['format'] = 'best[ext=mp4]/best'
+            ydl_opts['format'] = 'bestvideo[height<=720]+bestaudio/best[height<=720]/best'
         elif platform == 'Instagram':
             ydl_opts['format'] = 'best'
         elif platform == 'TikTok':
+            ydl_opts['format'] = 'best'
+        else:
             ydl_opts['format'] = 'best'
 
         def download_thread():
