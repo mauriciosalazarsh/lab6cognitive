@@ -94,22 +94,31 @@ def download_video():
         }
 
         ydl_opts = {
-            'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(id)s.%(ext)s'),
+            'outtmpl': os.path.join(DOWNLOAD_FOLDER, f'{download_id}_%(id)s.%(ext)s'),
             'progress_hooks': [ProgressHook(download_id)],
             'quiet': True,
             'no_warnings': True,
             'nocheckcertificate': True,
-            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'extractor_retries': 3,
-            'fragment_retries': 3,
+            'extractor_retries': 5,
+            'fragment_retries': 5,
             'ignoreerrors': False,
             'restrictfilenames': True,
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'en-us,en;q=0.5',
+                'Sec-Fetch-Mode': 'navigate',
+            },
         }
 
         if platform == 'YouTube':
-            ydl_opts['format'] = 'bestvideo[height<=720]+bestaudio/best[height<=720]/best'
+            ydl_opts['format'] = 'best[height<=480]/best'
         elif platform == 'Instagram':
             ydl_opts['format'] = 'best'
+            try:
+                ydl_opts['cookiesfrombrowser'] = ('chrome',)
+            except:
+                pass
         elif platform == 'TikTok':
             ydl_opts['format'] = 'best'
         else:
@@ -130,9 +139,11 @@ def download_video():
                         'platform': platform
                     }
             except Exception as e:
+                error_msg = str(e)
+                print(f"Error descargando {platform}: {error_msg}")
                 download_progress[download_id] = {
                     'status': 'error',
-                    'error': str(e)
+                    'error': error_msg
                 }
 
         thread = threading.Thread(target=download_thread)
@@ -180,4 +191,4 @@ def cleanup_downloads():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(host='0.0.0.0', debug=True, port=5001)

@@ -1,0 +1,12 @@
+services:
+  video-downloader:
+    build: .
+    container_name: video-downloader-app
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./static/downloads:/app/static/downloads
+    environment:
+      - FLASK_ENV=development
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

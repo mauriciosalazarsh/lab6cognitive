@@ -1,0 +1,26 @@
+# macOS
+.DS_Store
+
+# Downloaded videos and temporary files
+pregunta2/static/downloads/*.mp4
+pregunta2/static/downloads/*.webm
+pregunta2/static/downloads/*.part
+pregunta2/static/downloads/*.ytdl
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
