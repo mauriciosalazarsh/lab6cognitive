@@ -93,8 +93,10 @@ def download_video():
             'eta': 'N/A'
         }
 
+        output_template = os.path.join(DOWNLOAD_FOLDER, f'{download_id}_%(id)s.%(ext)s')
+
         ydl_opts = {
-            'outtmpl': os.path.join(DOWNLOAD_FOLDER, f'{download_id}_%(id)s.%(ext)s'),
+            'outtmpl': output_template,
             'progress_hooks': [ProgressHook(download_id)],
             'quiet': True,
             'no_warnings': True,
@@ -103,6 +105,13 @@ def download_video():
             'fragment_retries': 5,
             'ignoreerrors': False,
             'restrictfilenames': True,
+            'prefer_insecure': False,
+            'no_check_certificates': True,
+            'extract_flat': False,
+            'keepvideo': False,
+            'overwrites': True,
+            'continuedl': True,
+            'noprogress': False,
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -126,6 +135,7 @@ def download_video():
 
         def download_thread():
             try:
+                import traceback
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     info = ydl.extract_info(url, download=True)
                     filename = ydl.prepare_filename(info)
@@ -139,11 +149,14 @@ def download_video():
                         'platform': platform
                     }
             except Exception as e:
+                import traceback
                 error_msg = str(e)
+                error_trace = traceback.format_exc()
                 print(f"Error descargando {platform}: {error_msg}")
+                print(f"Traceback completo:\n{error_trace}")
                 download_progress[download_id] = {
                     'status': 'error',
-                    'error': error_msg
+                    'error': f"{error_msg}"
                 }
 
         thread = threading.Thread(target=download_thread)

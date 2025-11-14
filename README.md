@@ -76,7 +76,18 @@ cd pregunta2
 pip install -r requirements.txt
 
 # Ejecutar la aplicación
-python video_downloader.py
+python app.py
+```
+
+```bash
+# Navegar a la carpeta
+cd pregunta2.01
+
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Ejecutar la aplicación
+python lab06video.py
 ```
 
 ### Uso

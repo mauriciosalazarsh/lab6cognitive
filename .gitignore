@@ -7,6 +7,9 @@ pregunta2/static/downloads/*.webm
 pregunta2/static/downloads/*.part
 pregunta2/static/downloads/*.ytdl
 
+# Temporary download attempts
+pregunta2.01/
+
 # Python
 __pycache__/
 *.py[cod]
