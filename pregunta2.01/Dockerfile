@@ -1,24 +1,26 @@
-# Use Python 3.9 slim image as base
-FROM python:3.9-slim
+FROM python:3.10-slim
 
-# Set working directory
-WORKDIR /app
-
-# Install ffmpeg (required by yt-dlp for video processing)
+# Instalar certificados del sistema y utilidades necesarias
 RUN apt-get update && \
-    apt-get install -y ffmpeg && \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        ffmpeg \
+        curl \
+        wget && \
+    update-ca-certificates && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy requirements file
-COPY requirements.txt .
+# Crear directorio de trabajo
+WORKDIR /app
 
-# Install Python dependencies - upgrade pip and install specific yt-dlp version
+# Instalar dependencias
+COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir yt-dlp==2025.10.14
 
-# Copy the application
+# Copiar el script
 COPY lab06video.py .
 
-# Run the script
+# Ejecutar el script automáticamente
 CMD ["python", "lab06video.py"]
