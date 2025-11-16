@@ -87,7 +87,14 @@ cd pregunta2.01
 pip install -r requirements.txt
 
 # Ejecutar la aplicación
-python lab06video.py
+docker build -t video-downloader . --no-cache
+
+Para Mac o linux:
+docker run -v "$(pwd)":/app video-downloader
+
+
+Para Windows:
+docker run -v "%cd%":/app video-downloader
 ```
 
 ### Uso
